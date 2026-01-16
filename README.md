@@ -1,210 +1,92 @@
 # Energy Loop
 
-React + TypeScript + Vite va FastAPI backend bilan qurilgan interaktiv o'yin loyihasi.
+React (Vite) va FastAPI (Python) texnologiyalari asosida yaratilgan interaktiv jumboq o'yini.
 
-## 📋 Talablar
+## 📋 Xususiyatlar
 
-Loyihani ishga tushirishdan oldin quyidagilarni o'rnatganingizga ishonch hosil qiling:
+- **🎮 O'yin rejimlari**:
+  - **Quick Play**: 5x5 o'lchamdagi tasodifiy jumboq.
+  - **Daily Zen**: 7x7 o'lchamdagi kunlik jumboq (har kuni yangi).
+- **✨ Vizual Effektlar**: Nurlanuvchi plitkalar (Tiles) va silliq animatsiyalar.
+- **🔊 Ovozlar**: Harakat va g'alaba uchun maxsus tovushlar.
+- **🐳 Docker Support**: To'liq `dockerized` qilingan (Frontend + Backend).
 
-- **Node.js** (v18 yoki yuqori versiya)
-- **npm** yoki **yarn**
-- **Python** (v3.8 yoki yuqori versiya)
-- **pip** (Python package manager)
+## 🚀 Ishga Tushirish (Development)
 
-## 🚀 Loyihani Ishga Tushirish
+Loyiha ham frontend, ham backendni bitta buyruq bilan ishga tushirish uchun sozlangan.
 
-### 1️⃣ Frontend (React + Vite)
-
-#### O'rnatish:
+### 1-usul: Avtomatlashtirilgan Skript
 ```bash
-# Kerakli paketlarni o'rnatish
-npm install
+# Barcha kerakli bog'liqliklarni o'rnatadi va ishga tushiradi
+chmod +x setup_and_run.sh
+./setup_and_run.sh
 ```
 
-#### Ishga tushirish:
+### 2-usul: Qo'lda (Manual)
 ```bash
-# Development serverini ishga tushirish
+# 1. NPM paketlarini o'rnatish
+npm install
+
+# 2. Python paketlarini o'rnatish
+pip install -r backend/requirements.txt
+
+# 3. Ikkalasini birga ishga tushirish
 npm run dev
 ```
+O'yin `http://localhost:5173` manzilida ishga tushadi.
 
-Brauzerda `http://localhost:5173` manzilini oching.
+## 🧪 Testlash
 
-#### Boshqa buyruqlar:
+Loyihada Frontend (Vitest) va Backend (Pytest) testlari mavjud.
+
 ```bash
-# Production uchun build qilish
-npm run build
-
-# Production buildni ko'rish
-npm run preview
-
-# Kodni tekshirish (linting)
-npm run lint
+# Frontend va Backend testlarini ishga tushirish
+npm run test
 ```
 
-### 2️⃣ Backend (FastAPI)
+## 🌐 Deployment (Internetga Joylash)
 
-#### O'rnatish:
+Loyiha **Docker** asosida qurilganligi uchun uni istalgan platformaga (Render, Railway, VPS) osongina joylash mumkin.
+
+### 1. Render (Tavsiya etiladi)
+1. [Render](https://render.com) ga kiring va **New Blueprint** yarating.
+2. Ushbu repozitoriyani tanlang.
+3. Bo'ldi! Render `render.yaml` faylini o'qib, o'zi hammasini bajaradi.
+
+### 2. Railway
+1. [Railway](https://railway.app) da **New Project** yarating.
+2. Repozitoriyani tanlang.
+3. Railway `Dockerfile` ni topib, avtomatik deploy qiladi.
+
+### 3. Docker (Mahalliy)
 ```bash
-# Backend papkasiga o'tish
-cd backend
-
-# Virtual environment yaratish (ixtiyoriy, lekin tavsiya etiladi)
-python -m venv venv
-
-# Virtual environmentni faollashtirish
-# macOS/Linux:
-source venv/bin/activate
-# Windows:
-# venv\Scripts\activate
-
-# Kerakli paketlarni o'rnatish
-pip install -r requirements.txt
-```
-
-#### Ishga tushirish:
-```bash
-# Backend serverini ishga tushirish
-uvicorn main:app --reload
-```
-
-Backend `http://localhost:8000` manzilida ishga tushadi.
-
-API dokumentatsiyasini `http://localhost:8000/docs` da ko'rishingiz mumkin.
-
-## 🐳 Docker Deployment
-
-Loyihani Docker yordamida oson deploy qilishingiz mumkin (bu ham backend, ham frontendni o'z ichiga oladi).
-
-### 1️⃣ Docker Image qurish
-```bash
+# Image qurish
 docker build -t energy-loop .
-```
 
-### 2️⃣ Kontaynerni ishga tushirish
-```bash
-docker run -p 8000:8000 energy-loop
+# Ishga tushirish (8000-portda)
+docker run -p 8000:8000 -e PORT=8000 energy-loop
 ```
-
-Endi loyiha `http://localhost:8000` manzilida ishlaydi. Frontend `backend` tomonidan static fayl sifatida uzatiladi.
 
 ## 📁 Loyiha Tuzilishi
 
 ```
 energy-loop/
-├── backend/           # FastAPI backend
-│   ├── main.py       # Backend asosiy fayl
-│   ├── generator.py  # Level generator
-│   └── requirements.txt
-├── src/              # React frontend
-├── public/           # Static fayllar
-└── README.md
+├── backend/           # FastAPI (Python) backend
+│   ├── main.py        # Asosiy server va statik fayllar
+│   ├── generator.py   # Labirint generatsiya logikasi
+│   └── tests/         # Backend testlari
+├── src/               # React (TypeScript) frontend
+│   ├── components/    # O'yin komponentlari (Grid, Tile)
+│   ├── logic/         # O'yin mantiqi
+│   └── assets/        # Ovozlar va rasmlar
+├── public/            # Favicon va statik resurslar
+├── Dockerfile         # Docker konfiguratsiyasi
+├── render.yaml        # Render deployment sozlamalari
+└── setup_and_run.sh   # Tezkor ishga tushirish skripti
 ```
 
-## 🛠️ Texnologiyalar
+## 🛠 Texnologiyalar
 
-### Frontend:
-- React 19
-- TypeScript
-- Vite
-- TailwindCSS
-
-### Backend:
-- FastAPI
-- Uvicorn
-- Pydantic
-
-## 📸 Screenshots
-
-### Quick Play Mode (5x5 Grid)
-![Quick Play Mode](screenshots/quick-play-mode.png)
-
-### Daily Zen Mode (7x7 Grid)
-![Daily Zen Mode](screenshots/daily-zen-mode.png)
-
-### Tile Rotation in Action
-![Tile Rotation](screenshots/tile-rotation.png)
-
-## 🎮 O'yin Xususiyatlari
-
-- **Quick Play**: Tasodifiy 5x5 o'yin maydoni
-- **Daily Zen**: Kunlik 7x7 jumboq (har kuni bir xil seed)
-- **Interaktiv Tile Rotation**: Har bir katak ustiga bosish orqali 90° aylanish
-- **Power Flow Visualization**: Real-time energiya oqimi ko'rsatilishi
-- **Win Detection**: Barcha katak to'g'ri joylashganda g'alaba animatsiyasi
-- **Sound Effects**: Click va g'alaba tovushlari
-
----
-
-## React + Vite Qo'shimcha Ma'lumotlar
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- **Frontend**: React 19, TypeScript, Vite, TailwindCSS
+- **Backend**: FastAPI, Uvicorn, Python 3.11
+- **Tools**: Docker, Vitest, Pytest
