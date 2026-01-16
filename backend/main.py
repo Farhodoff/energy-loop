@@ -39,3 +39,23 @@ def get_daily_level():
     # Daily challenge is hardcoded to 7x7 for extra fun
     grid = generate_grid(7, 7, seed=seed)
     return grid
+
+# Serve static files (Frontend build)
+import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+
+# Check if static directory exists (it will in production)
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+if os.path.exists(static_dir):
+    app.mount("/assets", StaticFiles(directory=os.path.join(static_dir, "assets")), name="assets")
+    
+    # Catch-all for SPA client-side routing
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        # Allow API calls to pass through
+        if full_path.startswith("api"):
+            return {"error": "Not Found"}
+            
+        # Serve index.html for any other route
+        return FileResponse(os.path.join(static_dir, "index.html"))

@@ -5,7 +5,8 @@ import { playClickSound, playWinSound } from '../logic/audio';
 import { calculatePower } from '../logic/flow';
 
 // API Configuration
-const API_URL = 'http://localhost:8000/api';
+// API Configuration
+const API_URL = '/api';
 
 const Grid: React.FC = () => {
     const [grid, setGrid] = useState<GridMatrix>([]);

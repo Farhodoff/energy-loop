@@ -71,6 +71,22 @@ Backend `http://localhost:8000` manzilida ishga tushadi.
 
 API dokumentatsiyasini `http://localhost:8000/docs` da ko'rishingiz mumkin.
 
+## 🐳 Docker Deployment
+
+Loyihani Docker yordamida oson deploy qilishingiz mumkin (bu ham backend, ham frontendni o'z ichiga oladi).
+
+### 1️⃣ Docker Image qurish
+```bash
+docker build -t energy-loop .
+```
+
+### 2️⃣ Kontaynerni ishga tushirish
+```bash
+docker run -p 8000:8000 energy-loop
+```
+
+Endi loyiha `http://localhost:8000` manzilida ishlaydi. Frontend `backend` tomonidan static fayl sifatida uzatiladi.
+
 ## 📁 Loyiha Tuzilishi
 
 ```

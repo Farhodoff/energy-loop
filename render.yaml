@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: energy-loop
+    env: docker
+    region: frankfurt
+    plan: free
+    branch: main
+    repo: https://github.com/Farhodoff/energy-loop
+    healthCheckPath: /api/health
+    dockerContext: .
+    envVars:
+      - key: PORT
+        value: 8000
