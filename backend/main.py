@@ -45,6 +45,8 @@ import os
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
+from fastapi import HTTPException
+
 # Check if static directory exists (it will in production)
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.exists(static_dir):
@@ -55,7 +57,12 @@ if os.path.exists(static_dir):
     async def serve_spa(full_path: str):
         # Allow API calls to pass through
         if full_path.startswith("api"):
-            return {"error": "Not Found"}
+            raise HTTPException(status_code=404, detail="Not Found")
             
-        # Serve index.html for any other route
+        # Check if file exists in static dir (e.g. favicon.svg)
+        file_path = os.path.join(static_dir, full_path)
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            return FileResponse(file_path)
+            
+        # Serve index.html for any other route (SPA Fallback)
         return FileResponse(os.path.join(static_dir, "index.html"))

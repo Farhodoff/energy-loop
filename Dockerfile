@@ -32,4 +32,4 @@ COPY --from=build /app/dist ./static
 EXPOSE 8000
 
 # Run commands
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD sh -c "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"
