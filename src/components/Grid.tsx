@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Tile from './Tile';
+import ShopModal from './ShopModal';
 import type { GridMatrix, Point } from '../logic/types';
 import { playClickSound, playWinSound } from '../logic/audio';
 import { calculatePower } from '../logic/flow';
+import { getEffectiveShape } from '../logic/grid';
 
-// API Configuration
 // API Configuration
 const API_URL = '/api';
 
@@ -13,6 +14,10 @@ const Grid: React.FC = () => {
     const [isWon, setIsWon] = useState(false);
     const [loading, setLoading] = useState(false);
     const [mode, setMode] = useState<'random' | 'daily'>('daily'); // Default to daily for the big nice grid
+
+    // Shop State
+    const [showShop, setShowShop] = useState(false);
+    const [coins, setCoins] = useState(10);
 
     // Define Source Point (Bottom Center usually, but let's dynamic)
     // For 5x5: 2,4. For 7x7: 3,6.
@@ -53,7 +58,11 @@ const Grid: React.FC = () => {
             }
 
             if (allPowered && hasTiles) {
-                if (!isWon) playWinSound();
+                if (!isWon) {
+                    playWinSound();
+                    // Optional: Reward coin on win
+                    setCoins(c => c + 10);
+                }
                 setIsWon(true);
             } else {
                 setIsWon(false);
@@ -91,13 +100,73 @@ const Grid: React.FC = () => {
         });
     };
 
+    const handleWatchAd = () => {
+        // Simulate Ad Watch
+        alert("Simulating 5 second video ad...");
+        setTimeout(() => {
+            setCoins(prev => prev + 3);
+            alert("Thanks for watching! +3 Coins added.");
+        }, 1000);
+    };
+
+    const handleHint = () => {
+        if (isWon) return;
+
+        if (coins < 2) {
+            if (confirm("Not enough coins! Need 2 Coins. Watch an Ad to get +3?")) {
+                setShowShop(true);
+            }
+            return;
+        }
+
+        // Find incorrect tiles
+        const incorrectTiles: { x: number, y: number }[] = [];
+        grid.forEach((row, y) => {
+            row.forEach((tile, x) => {
+                // If effective shape doesn't match base type, it's rotated wrong
+                // (Assuming base type is always the rotation 0 solution)
+                if (getEffectiveShape(tile) !== tile.type) {
+                    incorrectTiles.push({ x, y });
+                }
+            });
+        });
+
+        if (incorrectTiles.length === 0) {
+            return;
+        }
+
+        // Pick random
+        const target = incorrectTiles[Math.floor(Math.random() * incorrectTiles.length)];
+
+        setCoins(c => c - 2);
+        playClickSound(); // Or special hint sound
+
+        setGrid(prevGrid => {
+            const newGrid = prevGrid.map(row => row.map(tile => ({ ...tile })));
+            // Set rotation to 0. Since 0 is always A solution.
+            newGrid[target.y][target.x].rotation = 0;
+            return newGrid;
+        });
+    };
+
     return (
         <div
-            className="flex flex-col items-center justify-center min-h-screen text-white p-4 transition-colors duration-1000"
+            className="flex flex-col items-center justify-center min-h-screen text-white p-4 transition-colors duration-1000 relative"
             style={{
                 background: 'radial-gradient(circle at center, #2b5c58 0%, #0f1c20 100%)'
             }}
         >
+            {/* Shop Button */}
+            <div className="absolute top-6 right-6">
+                <button
+                    onClick={() => setShowShop(true)}
+                    className="flex items-center gap-2 px-4 py-2 bg-black/20 hover:bg-black/40 border border-white/10 rounded-full transition-all"
+                >
+                    <span className="text-amber-400 font-bold">{coins}</span>
+                    <span className="text-[10px] uppercase tracking-widest text-gray-300">Coins</span>
+                </button>
+            </div>
+
             <h1 className="text-4xl font-light mb-8 tracking-widest text-teal-100/80 uppercase">Energy Loop</h1>
 
             {/* Mode Switcher */}
@@ -161,7 +230,16 @@ const Grid: React.FC = () => {
                 </div>
             )}
 
-            <div className="mt-12 opacity-80 hover:opacity-100 transition-opacity">
+            <div className="mt-12 flex gap-4 opacity-80 hover:opacity-100 transition-opacity">
+                {/* Hint Button */}
+                <button
+                    onClick={handleHint}
+                    disabled={isWon || loading}
+                    className="group px-6 py-3 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20 rounded-full text-xs uppercase tracking-[0.2em] transition-all flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <span className="text-amber-200">Hint</span>
+                    <span className="bg-amber-500/20 px-2 py-0.5 rounded text-[10px] text-amber-100">-2 🪙</span>
+                </button>
                 <button
                     onClick={() => fetchLevel(mode)}
                     className="group px-8 py-3 bg-transparent border border-white/10 hover:border-white/30 rounded-full text-xs uppercase tracking-[0.2em] transition-all"
@@ -170,6 +248,15 @@ const Grid: React.FC = () => {
                     {isWon ? <span className="text-teal-300 group-hover:drop-shadow-[0_0_8px_rgba(94,234,212,0.8)]">Next Sequence</span> : 'Reset Energy'}
                 </button>
             </div>
+
+            {/* Shop Modal */}
+            {showShop && (
+                <ShopModal
+                    onClose={() => setShowShop(false)}
+                    coins={coins}
+                    onWatchAd={handleWatchAd}
+                />
+            )}
         </div>
     );
 };
