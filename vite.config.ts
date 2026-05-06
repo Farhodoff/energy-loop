@@ -10,9 +10,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        name: 'Energy Loop',
+        name: 'Energy Loop - Farhodoff Edition',
         short_name: 'EnergyLoop',
-        description: 'Connect the flow, light up your mind. A minimalist daily puzzle game.',
+        description: 'Energiyani ulang va tizimni ishga tushiring. Minimalist kunlik jumboq o\'yini.',
         theme_color: '#2b5c58',
         background_color: '#1a1a1a',
         display: 'standalone',
